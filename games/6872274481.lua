@@ -4,6 +4,30 @@ end
 local cloneref = cloneref or function(obj)
 	return obj
 end
+
+-- Add downloadFile function for Bedwars-specific assets
+local isfile = isfile or function(file)
+	local suc, res = pcall(function()
+		return readfile(file)
+	end)
+	return suc and res ~= nil and res ~= ''
+end
+local function downloadFile(path, func)
+	if not isfile(path) then
+		local commit = (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''):match('^%x+$') and readfile('newvape/profiles/commit.txt') or 'main'
+		local suc, res = pcall(function()
+			return game:HttpGet('https://raw.githubusercontent.com/Sir-otter1/Vapev5forroblox/'..commit..'/'..select(1, path:gsub('newvape/', '')), true)
+		end)
+		if not suc or res == '404: Not Found' then
+			error(res)
+		end
+		if path:find('.lua') then
+			res = '--This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.\n'..res
+		end
+		writefile(path, res)
+	end
+	return (func or readfile)(path)
+end
 local vapeEvents = setmetatable({}, {
 	__index = function(self, index)
 		self[index] = Instance.new('BindableEvent')
@@ -41,8 +65,20 @@ local color = vape.Libraries.color
 local whitelist = vape.Libraries.whitelist
 local prediction = vape.Libraries.prediction
 local getfontsize = vape.Libraries.getfontsize
--- Use the GUI's getcustomasset function, not the library one
-local getcustomasset = getcustomasset or assetfunction
+-- Use proper getcustomasset function with downloadFile
+local getcustomasset = not inputService.TouchEnabled and assetfunction and function(path)
+	return downloadFile(path, assetfunction)
+end or function(path)
+	-- Fallback for common assets
+	local fallbacks = {
+		['newvape/assets/new/blur.png'] = 'rbxassetid://14368314459',
+		['newvape/assets/new/close.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/closemini.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/search.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/add.png'] = 'rbxassetid://14368315443'
+	}
+	return fallbacks[path] or ''
+end
 
 local store = {
 	attackReach = 0,

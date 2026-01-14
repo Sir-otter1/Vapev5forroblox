@@ -13,7 +13,7 @@ local isfile = isfile or function(file)
 end
 local function downloadFile(path, func)
 	if not isfile(path) then
-		local commit = (isfile('newvape/profiles/commit.txt') and ((isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''):match('^%x+$') and readfile('newvape/profiles/commit.txt') or 'main') or ''):match('^%x+$') and ((isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''):match('^%x+$') and readfile('newvape/profiles/commit.txt') or 'main') or 'main'
+		local commit = (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''):match('^%x+$') and readfile('newvape/profiles/commit.txt') or 'main'
 		local suc, res = pcall(function()
 			return game:HttpGet('https://raw.githubusercontent.com/Sir-otter1/Vapev5forroblox/'..commit..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
@@ -61,7 +61,21 @@ local vape = shared.vape
 local tween = vape.Libraries.tween
 local targetinfo = vape.Libraries.targetinfo
 local getfontsize = vape.Libraries.getfontsize
-local getcustomasset = getcustomasset or (vape and vape.GetCustomAsset)
+-- Define getcustomasset using local downloadFile function
+local getcustomasset = not inputService.TouchEnabled and getcustomasset and function(path)
+	return downloadFile(path, getcustomasset)
+end or function(path)
+	-- Fallback for assets that might be cached
+	local fallbacks = {
+		['newvape/assets/new/radaricon.png'] = 'rbxassetid://14403726449',
+		['newvape/assets/new/edit.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/blur.png'] = 'rbxassetid://14368314459',
+		['newvape/assets/new/close.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/search.png'] = 'rbxassetid://14368315443',
+		['newvape/assets/new/add.png'] = 'rbxassetid://14368315443'
+	}
+	return fallbacks[path] or ''
+end
 
 local TargetStrafeVector, SpiderShift, WaypointFolder
 local Spider = {Enabled = false}
