@@ -41,7 +41,8 @@ local color = vape.Libraries.color
 local whitelist = vape.Libraries.whitelist
 local prediction = vape.Libraries.prediction
 local getfontsize = vape.Libraries.getfontsize
-local getcustomasset = vape.Libraries.getcustomasset
+-- Use the GUI's getcustomasset function, not the library one
+local getcustomasset = getcustomasset or assetfunction
 
 local store = {
 	attackReach = 0,

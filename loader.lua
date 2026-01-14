@@ -10,8 +10,9 @@ end
 
 local function downloadFile(path, func)
 	if not isfile(path) then
+		local commit = (isfile('newvape/profiles/commit.txt') and readfile('newvape/profiles/commit.txt') or ''):match('^%x+$') and readfile('newvape/profiles/commit.txt') or 'main'
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/Sir-otter1/Vapev5forroblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/Sir-otter1/Vapev5forroblox/'..commit..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)

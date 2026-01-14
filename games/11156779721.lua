@@ -20,7 +20,7 @@ local targetinfo = vape.Libraries.targetinfo
 local prediction = vape.Libraries.prediction
 local color = vape.Libraries.color
 local uipallet = vape.Libraries.uipallet
-local getcustomasset = vape.Libraries.getcustomasset
+local getcustomasset = getcustomasset or (vape and vape.GetCustomAsset)
 
 local clientData = require(replicatedStorage.modules.player.ClientData)
 local aiController = require(lplr.PlayerScripts.AIController)

@@ -33,7 +33,7 @@ local tween = vape.Libraries.tween
 local color = vape.Libraries.color
 local whitelist = vape.Libraries.whitelist
 local prediction = vape.Libraries.prediction
-local getcustomasset = vape.Libraries.getcustomasset
+local getcustomasset = getcustomasset or (vape and vape.GetCustomAsset)
 
 local skywars, remotes = {}, {}
 local store = {
